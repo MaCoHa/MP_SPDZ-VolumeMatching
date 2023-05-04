@@ -1,0 +1,16 @@
+Using security parameter 40
+Trying to run 64-bit computation
+Starting timer 1 at 0 (0 MB) after 1.0584e-05
+Stopped timer 1 at 1.35096 (16.2325 MB)
+Starting timer 1 at 1.35096 (16.2325 MB) after 0.000389585
+Stopped timer 1 at 2.69974 (32.465 MB)
+Starting timer 1 at 2.69974 (32.465 MB) after 0.000335827
+Stopped timer 1 at 3.93822 (48.6975 MB)
+The following benchmarks are including preprocessing (offline phase).
+Time = 3.95464 seconds 
+Time1 = 3.93822 seconds (48.6975 MB)
+Data sent = 48.6976 MB in ~76096 rounds (party 2; use '-v' for more details)
+Global data sent = 146.101 MB (all parties)
+This program might benefit from some protocol options.
+Consider adding the following at the beginning of 'VolumeMatching-500-3.mpc':
+	program.use_split(3)

@@ -1,0 +1,143 @@
+import sys
+# import path
+sys.path.insert(0, "..\\..\\..\\mp-spdz-0.3.5")
+from Compiler.types import cint, sint, Array, MemValue
+from Compiler.library import print_ln, print_str, for_range, start_timer, stop_timer
+
+"""VARIABLE SETUP"""
+
+# constants
+n_test_iterations = 3  # run the algorithm n times
+
+seller_id = 0
+buyer_id = 1
+
+n_sellers = 100
+n_buyers = 100
+
+s_max_trades = MemValue(sint(0))  # difference between sells and buys
+
+# define the secret and clear inputs
+s_sellers = sint.Array(n_sellers)
+s_buyers = sint.Array(n_buyers)
+
+c_sellers = cint.Array(n_sellers)
+c_buyers = cint.Array(n_buyers)
+
+# a copy of the secret input before changes
+ori_s_sellers = sint.Array(n_sellers)
+ori_s_buyers = sint.Array(n_buyers)
+
+print_ln("CONSTANTS INITIALIZED")
+
+
+"""LOAD DATA FROM INPUT"""
+
+
+@for_range(n_sellers)
+def _(i):
+    stock = sint.get_input_from(seller_id)
+    s_sellers[i] = stock
+    ori_s_sellers[i] = stock
+    #Debug print_ln("got %s from seller %s", stock.reveal(), i)
+
+
+@for_range(n_buyers)
+def _(i):
+    stock = sint.get_input_from(buyer_id)
+    s_buyers[i] = stock
+    ori_s_buyers[i] = stock
+    #Debug print_ln("got %s from buyer %s", stock.reveal(), i)
+
+
+print_ln("DATA LOADED")
+
+
+"""RUN MATCHING"""
+
+
+def greater(a: sint, b: sint) -> sint:
+    return (a > b).if_else(a, b)
+
+
+def lesser(a: sint, b: sint) -> sint:
+    return (a < b).if_else(a, b)
+
+
+def sum_of(n: int, a: Array) -> MemValue:
+    total = MemValue(sint(0))
+    @for_range(n)
+    def _(i):
+        total.write(total.read() + a[i])
+    return total
+
+
+@for_range(n_test_iterations)
+def _(_):
+    start_timer(1)
+
+    """CALCULATE LESSER SUM OF ALL BUYERS AND SELLERS"""
+
+    s_sum_sellers = sum_of(n_sellers, s_sellers)  # sum of all selling stocks
+    s_sum_buyers = sum_of(n_buyers, s_buyers)  # sum of all buying requests
+    s_lesser = lesser(s_sum_sellers.read(), s_sum_buyers.read())
+    s_max_trades.write(s_lesser)
+
+    print_ln("Sum of sellers: %s", s_sum_sellers.reveal())
+    print_ln("Sum of buyers: %s", s_sum_buyers.reveal())
+
+    #Debug print_ln("TOTAL COUNTED")
+
+    """TRADE STOCKS"""
+
+    @for_range(n_sellers)
+    def _(i):
+        s_sellers[i] = greater(lesser(s_max_trades, s_sellers[i]), sint(0))
+        s_max_trades.write(s_max_trades.read() - s_sellers[i])
+        c_sellers[i] = cint(s_sellers[i].reveal())
+
+    s_max_trades.write(s_lesser)  # reset s_max_trades
+
+    @for_range(n_buyers)
+    def _(i):
+        s_buyers[i] = greater(lesser(s_max_trades, s_buyers[i]), sint(0))
+        s_max_trades.write(s_max_trades.read() - s_buyers[i])
+        c_buyers[i] = cint(s_buyers[i].reveal())
+
+    """PRINT TRANSACTIONS"""
+
+    print_ln('Opened values After transaction:')
+
+    print_ln('Sells:')
+    print_str('[')
+
+    # for i in range (N-1):
+    @for_range(n_sellers - 1)
+    def loop(i):
+        print_str('%s, ', c_sellers[i])
+
+    print_ln('%s]\n', c_sellers[n_sellers - 1])
+
+    print_ln('Buys:')
+    print_str('[')
+
+    # for i in range (M-1):
+    @for_range(n_buyers - 1)
+    def loop(i):
+        print_str('%s, ', c_buyers[i])
+
+    print_ln('%s]\n', c_buyers[n_buyers - 1])
+
+    stop_timer(1)
+
+    """RESET DATA TO ORIGINAL STATE"""
+
+    @for_range(n_buyers)
+    def loop(i):
+        s_sellers[i] = ori_s_sellers[i]
+
+    @for_range(n_sellers)
+    def loop(i):
+        s_buyers[i] = ori_s_buyers[i]
+
+    print_ln("ITERATION OVER")

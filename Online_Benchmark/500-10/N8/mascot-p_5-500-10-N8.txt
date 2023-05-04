@@ -1,0 +1,30 @@
+Using security parameter 40
+Starting timer 1 at 0 (0 MB) after 1.2435e-05
+REWINDING - ONLY FOR BENCHMARKING
+Stopped timer 1 at 5.28922 (9.61676 MB)
+Starting timer 1 at 5.28922 (9.61676 MB) after 0.00106905
+Stopped timer 1 at 10.5468 (19.2339 MB)
+Starting timer 1 at 10.5468 (19.2339 MB) after 0.00531749
+Stopped timer 1 at 15.7148 (28.851 MB)
+Starting timer 1 at 15.7148 (28.851 MB) after 0.00529905
+Stopped timer 1 at 20.7196 (38.4681 MB)
+Starting timer 1 at 20.7196 (38.4681 MB) after 0.0053606
+Stopped timer 1 at 25.717 (48.0853 MB)
+Starting timer 1 at 25.717 (48.0853 MB) after 0.00506509
+Stopped timer 1 at 31.0694 (57.7024 MB)
+Starting timer 1 at 31.0694 (57.7024 MB) after 0.00107767
+Stopped timer 1 at 36.3927 (67.3195 MB)
+Starting timer 1 at 36.3927 (67.3195 MB) after 0.00536226
+Stopped timer 1 at 41.9285 (76.9366 MB)
+Starting timer 1 at 41.9285 (76.9366 MB) after 0.00534519
+Stopped timer 1 at 47.4073 (86.5538 MB)
+Starting timer 1 at 47.4073 (86.5538 MB) after 0.00536256
+Stopped timer 1 at 52.8419 (96.1709 MB)
+The following benchmarks are excluding preprocessing (offline phase).
+Time = 53.02 seconds 
+Time1 = 52.8419 seconds (96.1709 MB)
+Data sent = 96.1715 MB in ~448241 rounds (party 5; use '-v' for more details)
+Global data sent = 1237.24 MB (all parties)
+This program might benefit from some protocol options.
+Consider adding the following at the beginning of 'VolumeMatching-500-10.mpc':
+	program.use_edabit(True)
